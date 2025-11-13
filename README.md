@@ -19,42 +19,6 @@ Unlike traditional Databricks MLlib-based projects, this implementation is fully
 | **Model Persistence**            | Delta Table (Base64 serialized model + metadata)       |
 | **Orchestration & Versioning**   | Databricks Repos + Git Integration                     |
 
-#Architecture
-                ┌────────────────────────┐
-                │  Source CSV (Transactions) │
-                └────────────┬─────────────┘
-                             │
-                             ▼
-        ┌────────────────────────────┐
-        │  Bronze Layer (Raw Data)   │
-        │  - Ingest CSV to Delta     │
-        │  - Store unprocessed copy  │
-        └────────────┬───────────────┘
-                     │
-                     ▼
-        ┌────────────────────────────┐
-        │  Silver Layer (Cleansed)   │
-        │  - Handle nulls, dups      │
-        │  - Validate schema         │
-        │  - Apply data quality rules│
-        └────────────┬───────────────┘
-                     │
-                     ▼
-        ┌────────────────────────────┐
-        │  Gold Layer (Features)     │
-        │  - Feature scaling & prep  │
-        │  - Export to Pandas        │
-        │  - Train fraud detection ML│
-        └────────────┬───────────────┘
-                     │
-                     ▼
-        ┌────────────────────────────┐
-        │  Model Registry (Delta)    │
-        │  - Save model metadata     │
-        │  - Serialize model blob    │
-        │  - Store metrics (AUC, date)│
-        └────────────────────────────┘
-
 #Machine Learning Component
 After Silver-level cleansing:
 
