@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score, classification_report
 import pandas as pd
+import uuid
 
 # COMMAND ----------
 
@@ -42,6 +43,7 @@ print(f" Logistic Regression AUC: {auc:.4f}")
 print(classification_report(y_test, y_pred))
 #collect metadata
 model_info = pd.DataFrame({
+    "run_id": [str(uuid.uuid4())],
     "model_name": ["Logistic Regression"],
     "auc": [auc],
     "coefficients": [lr.coef_.tolist()],
@@ -49,8 +51,4 @@ model_info = pd.DataFrame({
     "run_date": [pd.Timestamp.now()]
 })
 display(model_info)
-spark.createDataFrame(model_info).write.format("delta").mode("append").saveAsTable("finance_catalog.gold.model_metadata")
-
-# COMMAND ----------
-
-
+spark.createDataFrame(model_info).write.format("delta").option("mergeSchema", "true").mode("append").saveAsTable("finance_catalog.gold.model_metadata")
